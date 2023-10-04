@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="todo-list">
+            <!-- Display to-dos here -->
+        </div>
+        <main>
+            <div id="todo-form" style="display: none;">
+                <form id="add-todo-form">
+                    <input type="text" id="todo-message" required autocomplete="off">
+                    <div class="button-container">
+                        <button type="submit">Add</button>
+                        <button type="button" class="close-form-button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <button id="new-todo-button">+ Add Note</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
