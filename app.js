@@ -73,6 +73,7 @@ document.getElementById('add-todo-form').addEventListener('submit', (e) => {
     if (taskMessage.trim() !== '') {
         addTask(taskMessage);
         document.getElementById('todo-message').value = '';
-        closeTodoForm();
     }
 });
+
+
