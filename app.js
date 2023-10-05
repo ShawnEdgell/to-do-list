@@ -1,79 +1,111 @@
-// Define an array to store tasks
-let tasks = [];
+const noteInput = document.getElementById('noteInput');
+const addNoteButton = document.getElementById('addNote');
+const noteList = document.getElementById('noteList');
 
-// Function to add a new task
-function addTask(task) {
-    tasks.push(task);
-    displayTasks();
+// Initialize the application
+initApp();
+
+function initApp() {
+    populateNotesFromStorage();
+    addNoteButton.addEventListener('click', handleAddNote);
 }
 
-function displayTasks() {
-  const todoList = document.getElementById('todo-list');
-  todoList.innerHTML = '';
-
-  // Reverse the tasks array
-  const reversedTasks = tasks.slice().reverse();
-
-  reversedTasks.forEach((task, index) => {
-      const taskItem = document.createElement('li');
-      taskItem.className = 'todo-card';
-      taskItem.textContent = task;
-
-      const removeButton = document.createElement('button');
-      removeButton.textContent = 'Remove';
-      removeButton.className = 'remove-button';
-
-      // Add a click event listener to remove the task
-      removeButton.addEventListener('click', () => {
-          removeTask(index);
-      });
-
-      taskItem.appendChild(removeButton);
-      todoList.appendChild(taskItem);
-  });
+function populateNotesFromStorage() {
+    let storedNotes = getStoredNotes();
+    storedNotes.reverse().forEach(note => {
+        addNoteToList(note.text, note.checked);
+    });
 }
 
-// Function to remove a task
-function removeTask(index) {
-    tasks.splice(index, 1);
-    displayTasks();
-}
 
-// Function to open the add task form with animation
-function openTodoForm() {
-  const todoForm = document.getElementById('todo-form');
-  todoForm.style.maxHeight = '500px'; // Set the maximum height as per your design
-  todoForm.style.display = 'block';
-}
-
-// Function to close the add task form with animation
-function closeTodoForm() {
-  const todoForm = document.getElementById('todo-form');
-  todoForm.style.maxHeight = '0'; // Set the maximum height to 0 to close it
-  setTimeout(() => {
-      todoForm.style.display = 'none';
-  }, 300); // Delay removal of the form for a smooth animation
-}
-
-// Event listener for clicking the "Add Task" button
-document.getElementById('new-todo-button').addEventListener('click', () => {
-    openTodoForm();
-});
-
-// Event listener for clicking the "Cancel" button in the form
-document.querySelector('.close-form-button').addEventListener('click', () => {
-    closeTodoForm();
-});
-
-// Event listener for submitting the add task form
-document.getElementById('add-todo-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const taskMessage = document.getElementById('todo-message').value;
-    if (taskMessage.trim() !== '') {
-        addTask(taskMessage);
-        document.getElementById('todo-message').value = '';
+function handleAddNote() {
+    const noteText = noteInput.value.trim();
+    if (noteText) {
+        addNoteToList(noteText);
+        prependToStoredNotes(noteText);
+        noteInput.value = '';
     }
-});
+}
+
+function addNoteToList(text, checked = false) {
+    const li = createNoteElement(text, checked);
+    noteList.insertBefore(li, noteList.children[1]);
+}
+
+function createNoteElement(text, checked = false) {
+    const li = document.createElement('li');
+    const checkbox = createCheckbox(checked);
+    const label = createCheckboxLabel(checkbox.id);
+    const span = createEditableSpan(text);
+    const deleteButton = createDeleteButton();
+
+    li.appendChild(checkbox);
+    li.appendChild(label);
+    li.appendChild(span);
+    li.appendChild(deleteButton);
+
+    return li;
+}
+
+function createCheckbox(checked) {
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'custom-checkbox';
+    checkbox.id = 'noteCheckbox' + Date.now();
+    checkbox.checked = checked;
+    return checkbox;
+}
+
+function createCheckboxLabel(forId) {
+    const label = document.createElement('label');
+    label.setAttribute('for', forId);
+    return label;
+}
+
+function createEditableSpan(text) {
+    const span = document.createElement('span');
+    span.setAttribute('contenteditable', true);
+    span.setAttribute('spellcheck', 'false'); // Disable browser's spellcheck
+    span.textContent = text;
+    span.addEventListener('input', handleEditNote);
+    return span;
+}
 
 
+function handleEditNote() {
+    updateStoredNotes();
+}
+
+
+function createDeleteButton() {
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'X';
+    deleteButton.className = 'delete';
+    deleteButton.addEventListener('click', handleDeleteNote);
+    return deleteButton;
+}
+
+function handleDeleteNote(event) {
+    noteList.removeChild(event.target.parentElement);
+    updateStoredNotes();
+}
+
+function getStoredNotes() {
+    return JSON.parse(localStorage.getItem('notes') || '[]');
+}
+
+function prependToStoredNotes(noteText) {
+    let notes = getStoredNotes();
+    notes.unshift({ text: noteText, checked: false });
+    localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+function updateStoredNotes() {
+    const notes = Array.from(noteList.children)
+                       .slice(1)  // Skip the sample note
+                       .map(li => ({
+                           text: li.querySelector('span').textContent,
+                           checked: li.querySelector('.custom-checkbox').checked
+                       }));
+    localStorage.setItem('notes', JSON.stringify(notes));
+}
