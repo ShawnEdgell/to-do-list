@@ -8,6 +8,7 @@ initApp();
 function initApp() {
     populateNotesFromStorage();
     addNoteButton.addEventListener('click', handleAddNote);
+    noteInput.addEventListener('keydown', handleAddNote); // Add this line
 }
 
 function populateNotesFromStorage() {
@@ -17,13 +18,15 @@ function populateNotesFromStorage() {
     });
 }
 
-
-function handleAddNote() {
-    const noteText = noteInput.value.trim();
-    if (noteText) {
-        addNoteToList(noteText);
-        prependToStoredNotes(noteText);
-        noteInput.value = '';
+function handleAddNote(event) {
+    if ((event.key === 'Enter' && event.type === 'keydown') || event.type === 'click') {
+        const noteText = noteInput.value.trim();
+        if (noteText) {
+            addNoteToList(noteText);
+            prependToStoredNotes(noteText);
+            noteInput.value = '';
+            noteInput.focus(); // Set focus back to the input field
+        }
     }
 }
 
@@ -67,15 +70,27 @@ function createEditableSpan(text) {
     span.setAttribute('contenteditable', true);
     span.setAttribute('spellcheck', 'false'); // Disable browser's spellcheck
     span.textContent = text;
+
+    // Add event listener for the "input" event
     span.addEventListener('input', handleEditNote);
+
+    // Add event listener for the "keydown" event
+    span.addEventListener('keydown', handleEditableSpanKeydown);
+
     return span;
 }
 
+function handleEditableSpanKeydown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default behavior of adding a new line
+        const span = event.target;
+        span.blur(); // Remove focus from the span, triggering the 'input' event
+    }
+}
 
 function handleEditNote() {
     updateStoredNotes();
 }
-
 
 function createDeleteButton() {
     const deleteButton = document.createElement('button');

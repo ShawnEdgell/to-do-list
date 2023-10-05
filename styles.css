@@ -160,4 +160,12 @@ li span {
         height:100vh;
         background-color: orange;
     }
+
+    .input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0px;
+    }
 }
