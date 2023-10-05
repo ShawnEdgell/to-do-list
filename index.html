@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="icon.svg">
+    <link rel="icon" href="images/icon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>Notes</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-
+    <object id="deleteIcon" data="/images/delete-icon.svg" type="image/svg+xml" style="display:none;"></object>
     <div class="container">
         <div class="box">
             <div class="input">
@@ -16,9 +16,7 @@
                 <button id="addNote">Add Note</button>
             </div>
             <ul id="noteList">
-                <!-- Sample note with custom checkbox -->
                 <li>
-                    <input type="checkbox" id="sampleCheckbox" class="custom-checkbox">
                     <span><strong>Notes:</strong></span>
                     <!-- Add your delete button here if you've implemented it -->
                 </li>

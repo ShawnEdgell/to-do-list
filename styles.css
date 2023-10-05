@@ -40,7 +40,7 @@ body {
 .box {
     border-radius: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     background-color: white;
     width: 90%;
     min-height: 20%;    /* Minimum height */
@@ -53,14 +53,22 @@ input[type="text"] {
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.4rem;
 }
 
 button {
     padding: 10px 15px;
+    border-radius: 5px;
     background-color: #333;
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 1.4rem;
+}
+
+button:hover {
+    background-color: #666;;
 }
 
 ul {
@@ -149,7 +157,7 @@ li span {
     background-color: greenyellow;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 758px) {
     .container {
         max-width: 30rem;
         display: flex;
@@ -167,5 +175,14 @@ li span {
         align-items: center;
         justify-content: center;
         gap: 0px;
+        font-size: 14px;
+    }
+
+    button {
+        display: none;
+    }
+
+    input[type="text"] {
+        width: 100%;
     }
 }

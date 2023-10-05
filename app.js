@@ -8,13 +8,13 @@ initApp();
 function initApp() {
     populateNotesFromStorage();
     addNoteButton.addEventListener('click', handleAddNote);
-    noteInput.addEventListener('keydown', handleAddNote); // Add this line
+    noteInput.addEventListener('keydown', handleAddNote);
 }
 
 function populateNotesFromStorage() {
     let storedNotes = getStoredNotes();
     storedNotes.reverse().forEach(note => {
-        addNoteToList(note.text, note.checked);
+        addNoteToList(note.text);
     });
 }
 
@@ -25,56 +25,34 @@ function handleAddNote(event) {
             addNoteToList(noteText);
             prependToStoredNotes(noteText);
             noteInput.value = '';
-            noteInput.focus(); // Set focus back to the input field
+            noteInput.focus();
         }
     }
 }
 
-function addNoteToList(text, checked = false) {
-    const li = createNoteElement(text, checked);
+function addNoteToList(text) {
+    const li = createNoteElement(text);
     noteList.insertBefore(li, noteList.children[1]);
 }
 
-function createNoteElement(text, checked = false) {
+function createNoteElement(text) {
     const li = document.createElement('li');
-    const checkbox = createCheckbox(checked);
-    const label = createCheckboxLabel(checkbox.id);
     const span = createEditableSpan(text);
     const deleteButton = createDeleteButton();
 
-    li.appendChild(checkbox);
-    li.appendChild(label);
     li.appendChild(span);
     li.appendChild(deleteButton);
 
     return li;
 }
 
-function createCheckbox(checked) {
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'custom-checkbox';
-    checkbox.id = 'noteCheckbox' + Date.now();
-    checkbox.checked = checked;
-    return checkbox;
-}
-
-function createCheckboxLabel(forId) {
-    const label = document.createElement('label');
-    label.setAttribute('for', forId);
-    return label;
-}
-
 function createEditableSpan(text) {
     const span = document.createElement('span');
     span.setAttribute('contenteditable', true);
-    span.setAttribute('spellcheck', 'false'); // Disable browser's spellcheck
+    span.setAttribute('spellcheck', 'false');
     span.textContent = text;
 
-    // Add event listener for the "input" event
     span.addEventListener('input', handleEditNote);
-
-    // Add event listener for the "keydown" event
     span.addEventListener('keydown', handleEditableSpanKeydown);
 
     return span;
@@ -82,9 +60,9 @@ function createEditableSpan(text) {
 
 function handleEditableSpanKeydown(event) {
     if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default behavior of adding a new line
+        event.preventDefault();
         const span = event.target;
-        span.blur(); // Remove focus from the span, triggering the 'input' event
+        span.blur();
     }
 }
 
@@ -111,16 +89,15 @@ function getStoredNotes() {
 
 function prependToStoredNotes(noteText) {
     let notes = getStoredNotes();
-    notes.unshift({ text: noteText, checked: false });
+    notes.unshift({ text: noteText });
     localStorage.setItem('notes', JSON.stringify(notes));
 }
 
 function updateStoredNotes() {
     const notes = Array.from(noteList.children)
-                       .slice(1)  // Skip the sample note
+                       .slice(1)
                        .map(li => ({
-                           text: li.querySelector('span').textContent,
-                           checked: li.querySelector('.custom-checkbox').checked
+                           text: li.querySelector('span').textContent
                        }));
     localStorage.setItem('notes', JSON.stringify(notes));
 }
